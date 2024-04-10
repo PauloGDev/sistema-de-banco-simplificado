@@ -2,10 +2,7 @@ package com.volt.bancosimplificado.domain.transaction;
 
 import com.volt.bancosimplificado.domain.user.User;
 import jakarta.persistence.*;
-import lombok.AllArgsConstructor;
-import lombok.EqualsAndHashCode;
-import lombok.Getter;
-import lombok.Setter;
+import lombok.*;
 
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
@@ -14,6 +11,7 @@ import java.time.LocalDateTime;
 @Table(name = "transactions")
 @Getter
 @Setter
+@NoArgsConstructor
 @AllArgsConstructor
 @EqualsAndHashCode(of="id")
 public class Transaction {
@@ -29,7 +27,4 @@ public class Transaction {
     private User receiver;
     private LocalDateTime timestamp;
 
-    public Transaction() {
-
-    }
 }

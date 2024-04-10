@@ -1,10 +1,8 @@
 package com.volt.bancosimplificado.domain.user;
 
+import com.volt.bancosimplificado.dtos.UserDTO;
 import jakarta.persistence.*;
-import lombok.AllArgsConstructor;
-import lombok.EqualsAndHashCode;
-import lombok.Getter;
-import lombok.Setter;
+import lombok.*;
 
 import java.math.BigDecimal;
 
@@ -12,6 +10,7 @@ import java.math.BigDecimal;
 @Table(name = "users")
 @Getter
 @Setter
+@NoArgsConstructor
 @AllArgsConstructor
 @EqualsAndHashCode(of="id")
 public class User {
@@ -29,7 +28,14 @@ public class User {
     private BigDecimal balance;
     @Enumerated(EnumType.STRING)
     private UserType userType;
-    public User() {
 
+    public User(UserDTO data){
+        this.balance = data.balance();
+        this.email = data.email();
+        this.password = data.password();
+        this.firstName = data.firstName();
+        this.lastName = data.lastName();
+        this.userType = data.userType();
+        this.document = data.document();
     }
 }
