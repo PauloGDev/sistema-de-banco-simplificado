@@ -16,6 +16,8 @@ public class UserService {
     private UserRepository repository;
 
     public void validateTransaction(User sender, BigDecimal amount) throws Exception {
+
+
         if(sender.getUserType() == UserType.MERCHANT){
             throw new Exception("This type of user is unable to carry out transactions");
         }
@@ -25,8 +27,12 @@ public class UserService {
         }
     }
 
-    public User findUserById(Long id) throws Exception {
-        return this.repository.findUserById(id).orElseThrow(() -> new Exception("User not found"));
+//    public User findUserById(Long id) throws Exception {
+//        return this.repository.findUserById(id).orElseThrow(() -> new Exception("User not found"));
+//    }
+
+    public User findUserByDoc(String document) throws Exception {
+        return this.repository.findUserByDocument(document).orElseThrow(() -> new Exception("User not found"));
     }
 
     public User createUser(UserDTO data){

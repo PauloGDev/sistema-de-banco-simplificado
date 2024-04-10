@@ -10,9 +10,9 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestTemplate;
 
-import java.math.BigDecimal;
 import java.time.LocalDateTime;
 import java.util.Map;
+import java.util.Objects;
 
 @Service
 public class TransactionService {
@@ -30,13 +30,18 @@ public class TransactionService {
     private NotificationService notificationService;
 
     public Transaction createTransaction(TransactionDTO transaction) throws Exception {
-        User sender = this.userService.findUserById(transaction.senderId());
-        User receiver = this.userService.findUserById(transaction.receiverId());
+        User sender = this.userService.findUserByDoc(transaction.senderDoc());
+        User receiver = this.userService.findUserByDoc(transaction.receiverDoc());
 
         //Checks the amount available in the sender's balance
+
+        if(!sender.getPassword().equalsIgnoreCase(transaction.senderPass())){
+            throw new Exception("Invalid Password!");
+        }
+
         userService.validateTransaction(sender, transaction.value());
 
-        boolean isAuthorized = this.authorizeTransaction(sender, transaction.value());
+        boolean isAuthorized = this.authorizeTransaction();
         if(!isAuthorized){
             throw new Exception("Unauthorized transaction");
         }
@@ -61,17 +66,15 @@ public class TransactionService {
         return newTransaction;
     }
 
-    public boolean authorizeTransaction(User sender, BigDecimal value){
+    public boolean authorizeTransaction(){
         ResponseEntity<Map> authorizationresponse = restTemplate.getForEntity(
                 "https://run.mocky.io/v3/5794d450-d2e2-4412-8131-73d0293ac1cc", Map.class);
 
-        if(authorizationresponse.getStatusCode() ==
-                HttpStatus.OK){
-            String message = (String) authorizationresponse.getBody().get("message");
+        if(authorizationresponse.getStatusCode() == HttpStatus.OK){
+            String message = (String) Objects.requireNonNull(authorizationresponse.getBody()).get("message");
             return "Autorizado".equalsIgnoreCase(message);
         }else{
             return false;
-
         }
     }
 }
